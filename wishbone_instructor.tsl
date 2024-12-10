@@ -1,0 +1,18 @@
+// This is the implementation of WISHBONE B4
+// This is the Controller agent
+// TERMINATING Signals
+TERM_SIG = ACK_I || ERR_I || RTY_I
+initially guarantee {
+}
+always guarantee {
+STB_O -> CYC_O // RULE 3.25, page 33, [CYC_O must be asserted no later than the rising CLK_I edge that qualifies the assertion of STB_O]
+CYC_O && STB_O -> CYC_O U !STB_O // RULE 3.25, Page 33, [CYC_O Must be negated no earlier than the negation of STB_O]
+// PERMISSION 3.05
+// Controller interfaces MAY assert [CYC_O] indefinitely
+// RECOMMENDATION 3.05
+// Arbiter logic uses the CYC_I to select between different controller agents if you follow the permission 3.05 and allow 
+// the CYC_O to be asserted for long time, then it may cause arbitration problems.
+// Handshaking protocol  3.1.3.1
+
+STB_O -> STB_O U TERM_SIG // Page 33, [STB_O remains asserted until the worker asserts one of the terminating signal
+

@@ -1,0 +1,18 @@
+// This is the implementation of WISHBONE B4 protocol
+// Handshaking
+// This is the worker agent
+// RULE 3.30
+// Workers may not respond any other workers when CYC_I is negatged
+// PERMISSION 3.10
+// if in standard mode the worker gurantees that it can keep pace with all Controller interfaces
+// if the ERR_I and RTY_I signals are not used then the workers ACK_O = STB_I && CYC_I [both signal are workers]
+// system should behave normally under these circumstances.
+// OBSERVATION 3.25
+// In standard mode Worker assert a cycle termination in resoponse to STB_I.
+
+initially guarantee {
+}
+always guarantee {
+// in standard mode SLAVE interfaces assert a cycle termination signal in response to STB_I
+!CYC_I -> !STB_I // OBSERVATION 3.25, page 34, STB_I is only valid when CYC_I is valid.
+
