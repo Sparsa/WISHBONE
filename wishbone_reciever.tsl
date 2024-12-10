@@ -9,10 +9,16 @@
 // system should behave normally under these circumstances.
 // OBSERVATION 3.25
 // In standard mode Worker assert a cycle termination in resoponse to STB_I.
+// TERMINATING Signals
+TERM_SIG = ACK_O || ERR_O || RTY_O
 
 initially guarantee {
 }
 always guarantee {
 // in standard mode SLAVE interfaces assert a cycle termination signal in response to STB_I
 !CYC_I -> !STB_I // OBSERVATION 3.25, page 34, STB_I is only valid when CYC_I is valid.
+// RULE 3.35
+// In standard mode the cycle termination signals TERM_SIG must be generated in response to the logical and of CYC_I and STB_I
+// PERMISSION 3.15
+// Other signals, beside the previously mentioned two may be included in generating the TERM_SIG
 
