@@ -5,8 +5,8 @@ TERM_SIG = ACK_I || ERR_I || RTY_I
 initially guarantee {
 }
 always guarantee {
-STB_O -> CYC_O // RULE 3.25, page 33, [CYC_O must be asserted no later than the rising CLK_I edge that qualifies the assertion of STB_O]
-CYC_O && STB_O -> CYC_O U !STB_O // RULE 3.25, Page 33, [CYC_O Must be negated no earlier than the negation of STB_O]
+STB_O -> CYC_O; // RULE 3.25, page 33, [CYC_O must be asserted no later than the rising CLK_I edge that qualifies the assertion of STB_O]
+CYC_O && STB_O -> CYC_O U !STB_O; // RULE 3.25, Page 33, [CYC_O Must be negated no earlier than the negation of STB_O]
 // PERMISSION 3.05
 // Controller interfaces MAY assert [CYC_O] indefinitely
 // RECOMMENDATION 3.05
@@ -14,5 +14,21 @@ CYC_O && STB_O -> CYC_O U !STB_O // RULE 3.25, Page 33, [CYC_O Must be negated n
 // the CYC_O to be asserted for long time, then it may cause arbitration problems.
 // Handshaking protocol  3.1.3.1
 
-STB_O -> STB_O U TERM_SIG // Page 33, [STB_O remains asserted until the worker asserts one of the terminating signal
-
+STB_O -> STB_O U TERM_SIG; // Page 33, [STB_O remains asserted until the worker asserts one of the terminating signal
+// OBSERVATION 3.30
+// In the instructor interface, the ACK_I signal works as a terminator signal. When it is asserted, it means that the bus cycle terminated normally.
+// But, if the  instructor recieves ERR_I then the bus cycle is not terminated normally.
+// what arethe kind of error that the worker recieved? It can be parity fault. The specification do not indicate what the instructor should do if it recieves  an ERR_I
+// When the instructor recieves the signal RTY_I, the instructor should understand that it should terminate the current bus cycle and try it after some time.
+// This is mostly used for shared memory, and bus brdiges. Thus the local bus or the resource can be busy and then the worker can send this retry signal to the controller.
+// Similar to error, the specification does not specify what the controller  should do when it recieves the retry message.
+// RULE 3.40:
+// Necessary signals need to be present for a system be  called WISHBONE :
+// Controller: ACK_I CLK_I, CYC_O, STB_O, RST_I
+//RECOMMENDATION 3.10
+// INTERCON is responsible to prevent possible deadlock. One can use WATCHDOG timer functions. Thse timer functions monitors the instructors 
+// STB_O signal and automatically assumes that an error has happened by asserting ERR_I or RTY_I. Note that for that you have to have a predefined timing limit.
+//RECOMMENDATION 3.15
+// There should be no logic gatges between a registered flipflops and signal outputs on STB_O nd CYC_O. This will resolve issues occures due to delay.
+// RULE 3.55: Instructors should operate normally when the worker holds the ACK_I in high state.
+}
