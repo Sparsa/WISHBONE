@@ -1,4 +1,5 @@
 // This is the implementation of WISHBONE B4 protocol
+// The idea is to implement a simple worker that lights up a led if the input value is ODD else the light is off.
 // Handshaking
 // This is the worker agent
 // RULE 3.30
@@ -10,28 +11,44 @@
 // OBSERVATION 3.25
 // In standard mode Worker assert a cycle termination in resoponse to STB_I.
 // TERMINATING Signals
-TERM_SIG = ACK_O || ERR_O || RTY_O ;
+//TERM_SIG = ACK_O || ERR_O || RTY_O ;
 
 initially guarantee {
+//[odd <- false]; // before operation the value should be false
 }
 always guarantee {
+// RESET:
+RST_I -> [odd <- false]; // if the reset comes we are making it false
+// OBSERVATION 3.10
+// SLAVE interfaces automatically negate [ACK_O], [ERR_O], and [RTY_O] when their [STB_I] is negated in standard mode
+// in PIPELINE mode the asertions ACK_O, ERR_O, and RTY_O are done independently of STB_I, page 32.
+//!STB_I -> !(ACK_O || ERR_O || RTY_O ); // I am currently implementing the standard mode so commenting this out
 // in standard mode SLAVE interfaces assert a cycle termination signal in response to STB_I
-!CYC_I -> !STB_I ;// OBSERVATION 3.25, page 34, STB_I is only valid when CYC_I is valid.
+// OBSERVATION 3.25, page 34, STB_I is only valid when CYC_I is valid.
 // RULE 3.35
 // In standard mode the cycle termination signals TERM_SIG must be generated in response to the logical and of CYC_I and STB_I
+// PERMISSION 3.10, page 34
+// In standard mode the Worker guarantees it can keep pace with all Insturctor interfaces and if the [ERR_O] and [RTY_O] are not used, then the 
+// workers [ACK_O] may be tied to the logical and of the WORKERS STB_I and CYC_I inputs.
+// Keeping it simple here, as we want to send ack immidiately when the STB_I and CYC_I is asserted.
+//STB_I && CYC_I -> [ACK_O <- true] ; // this is wierd behavior, I was expecting STB_I && CYC_I -> ACK_O is same as the one I have written, but it is not, will it cause delay by one cycle????
+// LOGIC of the Worker
+// I am writing a function that checks if the input data is Odd, 
+!RST_I && STB_I && CYC_I -> [odd <- checkOdd DAT_I] && [ACK_O <- true]; // I have combined the ACK_O logic and the odd logic here. I will write a function that checks if the data you put here is odd or not.
 // PERMISSION 3.15
 // Other signals, beside the previously mentioned two may be included in generating the TERM_SIG
 // OBSERVATION 3.30
 // The internal signals of reciever have to understand what is the cycle termination signal and when it is asserted
 // For example ACK_I is used to terminate a local bus cycle. Also it can use ERR_O or RTY_O.
 // RULE 3.40
+// for minimum implementation the worker must have the following signals implemented
 // Worker: ACK_O, CLK_I, CYC_I, STB_I and RST_I.
 //RULE 3.45:
 // If an worker supports the signals: 
 // ERR_O and RTY_O ontop of ACK_O then the slave ** MUST NOT** assert more than one of these signals.
-ACK_O -> !ERR_O && !RTY_O; // When ACK_O is high the ther two is not high
-ERR_O -> !ACK_O && !RTY_O; // when ERR_O is high the other two is not high
-RTY_O -> !ERR_O && !ACK_O; // When RTY_O is high the other two is not high
+//ACK_O -> !ERR_O && !RTY_O; // When ACK_O is high the ther two is not high
+//ERR_O -> !ACK_O && !RTY_O; // when ERR_O is high the other two is not high
+//RTY_O -> !ERR_O && !ACK_O; // When RTY_O is high the other two is not high
 // ** DO NOT ** use WORKER that supports ERR_O and/or RTY_O with instructor that do not support these. This will cause ** DEADLOCK** 
 
 // RULE: 3.50:
