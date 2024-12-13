@@ -4,7 +4,6 @@
 #   Project Settings                                                           #
 ##----------------------------------------------------------------------------##
 
-NAME = wishbone_reciever 
 
 ##----------------------------------------------------------------------------##
 #   Build Rules                                                                #
@@ -12,17 +11,17 @@ NAME = wishbone_reciever
 
 default: clash/src/Control.hs  
 
-${NAME}.tlsf: ${NAME}.tsl
+wishbone_reciever.tlsf: wishbone_reciever.tsl
 	@echo "Creating $@"
 	@${TSL2TLSF} $< > $@
 
-${NAME}.cfm: ${NAME}.tlsf
+wishbone_reciever.cfm: wishbone_reciever.tlsf
 	@echo "Starting LTL Synthesis"
 	@${SYNTH} $< > $@
 	@if [ `head -n 1 $@` == "REALIZABLE" ]; then echo ""; echo "-> REALIZABLE"; echo ""; sed -i '1d' $@; cat $@ | grep aag | sed 's/aag [0-9]* [0-9]* \([0-9]*\) [0-9]* [0-9]*/\1 latches/'; cat $@ | grep aag | sed 's/aag [0-9]* [0-9]* [0-9]* [0-9]* \([0-9]*\)/\1 gates/'; else echo ""; echo "UNREALIZABLE"; fi
 
-clash/src/Control.hs: ${NAME}.cfm
-	@${CFM2CODE} clash -m Control -f control -o $@ $<
+clash/src/Control.hs: wishbone_reciever.cfm
+	@${CFM2CODE} --clash -m Control -f control -o $@ $<
 
 
 
