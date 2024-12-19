@@ -18,7 +18,7 @@ initially guarantee {
 }
 always guarantee {
 // RESET:
-rst_i -> [odd <- false]; // if the reset comes we are making it false
+// rst_i -> [odd <- false]; // if the reset comes we are making it false
 // OBSERVATION 3.10
 // SLAVE interfaces automatically negate [ACK_O], [ERR_O], and [RTY_O] when their [STB_I] is negated in standard mode
 // in PIPELINE mode the asertions ACK_O, ERR_O, and RTY_O are done independently of STB_I, page 32.
@@ -34,7 +34,7 @@ rst_i -> [odd <- false]; // if the reset comes we are making it false
 //STB_I && CYC_I -> [ACK_O <- true] ; // this is wierd behavior, I was expecting STB_I && CYC_I -> ACK_O is same as the one I have written, but it is not, will it cause delay by one cycle????
 // LOGIC of the Worker
 // I am writing a function that checks if the input data is Odd, 
-!rst_i && stb_i && cyc_i -> [odd <- checkOdd dat_i] && [ack_o <- true]; // I have combined the ACK_O logic and the odd logic here. I will write a function that checks if the data you put here is odd or not.
+ stb_i && cyc_i -> [odd <- checkOdd dat_i] && [ack_o <- true]; // I have combined the ACK_O logic and the odd logic here. I will write a function that checks if the data you put here is odd or not.
 // PERMISSION 3.15
 // Other signals, beside the previously mentioned two may be included in generating the TERM_SIG
 // OBSERVATION 3.30
