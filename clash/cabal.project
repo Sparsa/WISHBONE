@@ -1,0 +1,13 @@
+packages: wishbone.cabal
+
+write-ghc-environment-files: always
+
+package clash-prelude
+  flags: -multiple-hidden
+  ghc-options: +RTS -qn8 -A64M -RTS -j8
+
+package clash-lib
+  ghc-options: +RTS -qn8 -A64M -RTS -j8
+
+package clash-ghc
+  ghc-options: +RTS -qn8 -A64M -RTS -j8
