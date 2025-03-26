@@ -1,0 +1,186 @@
+diff -ruN origsrc/Add.hs src/Add.hs
+--- origsrc/Add.hs	2025-03-26 16:30:22.596272107 +0100
++++ src/Add.hs	2025-03-26 16:37:50.849863902 +0100
+@@ -18,7 +18,7 @@
+   , Output(..)
+   , Functions(..)
+   , InitialState(..)
+-  , add
++  , Add.add
+   ) where
+ 
+ -----------------------------------------------------------------------------
+@@ -101,7 +101,9 @@
+ -----------------------------------------------------------------------------
+ 
+ add
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
++  => (NFDataX a)
++  => (NFDataX c)
+   => Functions a b c d
+   -> InitialState a c
+   -> Input domain a b
+@@ -121,8 +123,8 @@
+     w11 = sum <$> w9 <*> w10
+     w12 = pure True
+     w13 = pure False
+-    b16 = pack . first <$> in1
+-    b17 = pack . first <$> in2
++    b16 = unpack.pack . first <$> in1
++    b17 = unpack.pack . first <$> in2
+ 
+     ControlOut{..} =
+       controlCircuit
+@@ -202,7 +204,7 @@
+ -----------------------------------------------------------------------------
+ 
+ ack_oSwitch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 3)
+   -> Signal domain (Vec 3 a)
+   -> Signal domain a
+@@ -217,7 +219,7 @@
+ -----------------------------------------------------------------------------
+ 
+ dat_oSwitch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -231,7 +233,7 @@
+ -----------------------------------------------------------------------------
+ 
+ dat_o_1Switch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -245,7 +247,7 @@
+ -----------------------------------------------------------------------------
+ 
+ dat_o_2Switch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -259,7 +261,7 @@
+ -----------------------------------------------------------------------------
+ 
+ enb1Switch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -273,7 +275,7 @@
+ -----------------------------------------------------------------------------
+ 
+ enb2Switch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -287,7 +289,7 @@
+ -----------------------------------------------------------------------------
+ 
+ controlCircuit
+- :: HiddenClockReset domain gated synchronous
++ :: HiddenClockResetEnable domain
+  => ControlIn domain -> ControlOut domain
+ 
+ controlCircuit ControlIn{..} = 
+@@ -361,4 +363,4 @@
+     _and_ = liftA2 (.&.)
+     _not_ = fmap complement
+ 
+------------------------------------------------------------------------------
+\ No newline at end of file
++-----------------------------------------------------------------------------
+diff -ruN origsrc/Cube.hs src/Cube.hs
+--- origsrc/Cube.hs	2025-03-26 16:30:22.596272107 +0100
++++ src/Cube.hs	2025-03-26 16:36:20.532818569 +0100
+@@ -72,7 +72,9 @@
+ -----------------------------------------------------------------------------
+ 
+ cube
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
++  => (NFDataX a)
++  => (NFDataX b)
+   => Functions a b
+   -> InitialState b
+   -> Input domain a
+@@ -107,7 +109,7 @@
+ -----------------------------------------------------------------------------
+ 
+ doutSwitch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -121,14 +123,13 @@
+ -----------------------------------------------------------------------------
+ 
+ controlCircuit
+- :: HiddenClockReset domain gated synchronous
++ :: HiddenClockResetEnable domain
+  => ControlIn domain -> ControlOut domain
+ 
+ controlCircuit ControlIn{..} = 
+-  let
+     ControlOut
+       { controlOut0 = pure high
+       , controlOut1 = pure low
+       }
+ 
+------------------------------------------------------------------------------
+\ No newline at end of file
++-----------------------------------------------------------------------------
+diff -ruN origsrc/Sqroot.hs src/Sqroot.hs
+--- origsrc/Sqroot.hs	2025-03-26 16:30:22.596272107 +0100
++++ src/Sqroot.hs	2025-03-26 16:35:31.010365293 +0100
+@@ -72,7 +72,9 @@
+ -----------------------------------------------------------------------------
+ 
+ sqroot
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
++  => (NFDataX b)
++  => (NFDataX a)
+   => Functions a b
+   -> InitialState b
+   -> Input domain a
+@@ -107,7 +109,7 @@
+ -----------------------------------------------------------------------------
+ 
+ doutSwitch
+-  :: HiddenClockReset domain gated synchronous
++  :: HiddenClockResetEnable domain
+   => Signal domain (BitVector 2)
+   -> Signal domain (Vec 2 a)
+   -> Signal domain a
+@@ -121,14 +123,13 @@
+ -----------------------------------------------------------------------------
+ 
+ controlCircuit
+- :: HiddenClockReset domain gated synchronous
++ :: HiddenClockResetEnable domain
+  => ControlIn domain -> ControlOut domain
+ 
+ controlCircuit ControlIn{..} = 
+-  let
+     ControlOut
+       { controlOut0 = pure high
+       , controlOut1 = pure low
+       }
+ 
+------------------------------------------------------------------------------
+\ No newline at end of file
++-----------------------------------------------------------------------------

@@ -18,6 +18,7 @@ default: ${BUILDDIR}/verilog/${NAME}.v
 
 
 ${BUILDDIR}/verilog/${NAME}.v: src/${TOPENTITY}.hs src/Add.hs src/Cube.hs src/Sqroot.hs
+	patch -p0 < src.patch
 	mkdir -p ${BUILDDIR}/clash
 	${CABAL} run -- wishbone:clash ${CPP_FLAGS} \
     -package-env ./.ghc.environment.* \
