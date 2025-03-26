@@ -1,5 +1,5 @@
 # Wishbone BUS design using TSL synthesis
-* TSL or Temporal Stream logic is used to specify the properties of the bus system. Then we use the TSL toolkit to convert that TSL specification to LTL. Then using Strix (or any other syntehsis tool) we can convert the LTL to a realizable model. Then use the output to create a Control.hs. And also you have to implement the implementation of the Datapath.
+* TSL or Temporal Stream logic is used to specify the properties of the bus system. We use the TSL toolkit to convert that TSL specification to LTL. Then using Strix (or any other syntehsis tool) we can convert the LTL to a realizable model. Then use the output to create a Control.hs. And also you have to implement the implementation of the Datapath.
 * During this process there are a few issues that we had to resolve. First the step from the synthesis to haskell generation the tools are used which are not generating code supported by the latest version of clash.
  So we had to manually made those changes.
  For example, the previous tool chain generates something called HiddenClockReset, which is non existant in Clash 1.8.1. We had to rename it to HiddenClockResetEnable domain (remove the rest of the parameters, only keep domain)

@@ -1,0 +1,15 @@
+
+
+always assume{
+
+
+
+}
+initially guarantee {
+}
+
+
+
+always guarantee {
+enb -> [dout <- sq din];
+}

@@ -1,0 +1,19 @@
+
+ENABLE = stb_i && cyc_i; // enable signal for wishbone bus
+
+always assume{
+
+ENABLE -> F ((first in1) && (first in2));
+
+}
+initially guarantee {
+[ack_o <- false]; // the ack will also low to start with.
+}
+
+
+
+always guarantee {
+ENABLE -> [enb1 <- true] && [dat_o_1 <- dat_i];
+ENABLE -> X ([enb2 <- true] && [dat_o_2 <- dat_i]);
+(first in1) && (first in2) <-> [dat_o <- sum (second in1) (second in2)] && X [ack_o <- true];
+}

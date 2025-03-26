@@ -44,7 +44,9 @@ library
   hs-source-dirs: src
   build-depends: clash-prelude
   exposed-modules:
-    Control
+    Add
+    Cube
+    Sqroot
     TopEntity
 
 executable clash
