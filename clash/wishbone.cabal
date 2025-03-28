@@ -41,7 +41,7 @@ common common-options
 
 library
   import: common-options
-  hs-source-dirs: src
+  hs-source-dirs: build/src 
   build-depends: clash-prelude
   exposed-modules:
     Add

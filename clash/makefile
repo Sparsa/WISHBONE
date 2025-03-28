@@ -6,7 +6,9 @@
 
 NAME = wishbone_reciever 
 TOPENTITY = TopEntity
+GHC_ENV := $(firstword $(wildcard ./.ghc.environment.*))
 
+PATCHED_SOURCES = ${BUILDDIR}/.patched
 ##----------------------------------------------------------------------------##
 #   Build Rules                                                                #
 ##----------------------------------------------------------------------------##
@@ -14,23 +16,24 @@ TOPENTITY = TopEntity
 default: ${BUILDDIR}/verilog/${NAME}.v 
 
 
+${PATCHED_SOURCES}: src.patch src/Add.hs src/Cube.hs src/Sqroot.hs
+	@mkdir -p "${BUILDDIR}/src"
+	@cp -r src/* "${BUILDDIR}/src/"
+	@cp src.patch "${BUILDDIR}"
+	@cd "${BUILDDIR}" && patch -p0 < src.patch
+	@touch "$@"   # Mark patching as complete
 
 
-
-${BUILDDIR}/verilog/${NAME}.v: src/${TOPENTITY}.hs src/Add.hs src/Cube.hs src/Sqroot.hs
-	patch -p0 < src.patch
-	mkdir -p ${BUILDDIR}/clash
+${BUILDDIR}/verilog/${NAME}.v:  ${PATCHED_SOURCES}
+	@mkdir -p ${BUILDDIR}/clash
 	${CABAL} run -- wishbone:clash ${CPP_FLAGS} \
-    -package-env ./.ghc.environment.* \
+    -package-env ${GHC_ENV} \
     -outputdir ${BUILDDIR}/clash \
     --verilog \
-    src/${TOPENTITY}.hs -v
+    "${BUILDDIR}/src/${TOPENTITY}.hs" -v
 	rm -Rf ${BUILDDIR}/verilog
 	mv ${BUILDDIR}/clash/${TOPENTITY}.topEntity ${BUILDDIR}/verilog
 
-src/Control.hs:
-	$(MAKE) -C ..
-	echo ""
 
 ##----------------------------------------------------------------------------##
 #   Cleanup                                                                    #
