@@ -1,5 +1,6 @@
 #/bin/bash
 BINDIR=bin
+SYFCO=$BINDIR/syfco
 set -e
 
 if [ "$#" -lt 2 ]; then
@@ -21,8 +22,8 @@ $BINDIR/syfco $1 -s0 -f bosy -q double -m fully -os Mealy -o $json_file
 
 #cat $ltl_file
 #echo
-ins=`$(BINDIR)/syfco $1 -ins`
-outs=`$(BINDIR)/syfco $1 -outs`
+ins=`$SYFCO $1 -ins`
+outs=`$SYFCO $1 -outs`
 
 if [ "$#" -ne 3 ]; then
 #
