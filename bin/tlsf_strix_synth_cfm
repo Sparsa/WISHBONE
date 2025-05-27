@@ -1,0 +1,42 @@
+#/bin/bash
+
+set -e
+
+if [ "$#" -lt 2 ]; then
+    echo "Specify input TLSF file and output cfm/aag file"
+    exit 1
+fi
+
+tlsf_file=$1
+#echo "input tlsf: " $tlsf_file
+
+ltl_file=$(basename $tlsf_file .tlsf).ltl
+json_file=$(basename $tlsf_file .tlsf).json
+#echo "tmp ltl file: " $ltl_file
+#echo "output file: " $ltl_file.hoa
+#echo
+
+syfco $1 -s0 -f ltl -q double -m fully -os Mealy -o $ltl_file
+syfco $1 -s0 -f bosy -q double -m fully -os Mealy -o $json_file
+
+#cat $ltl_file
+#echo
+ins=`syfco $1 -ins`
+outs=`syfco $1 -outs`
+
+if [ "$#" -ne 3 ]; then
+#
+	
+	echo "inputs: " $ins 
+#// this are inputs and outputs ofthe design.
+	echo "outputs: " $outs
+#
+fi
+#echo "-------------------------------------------------------------"
+#output=$(basename $tlsf_file .tlsf).cfm
+# run strix
+if [ $3 -eq 0]; then 
+strix -F $ltl_file --ins "$ins" --outs "$outs"  -o aag -O $2 
+else
+strix -F $ltl_file --ins "$ins" --outs "$outs" -t trace -o aag -O $2 
+fi
