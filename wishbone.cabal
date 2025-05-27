@@ -1,0 +1,77 @@
+cabal-version:       2.4
+name:                wishbone 
+synopsis:            Wishbone Bus Implementation
+version:             0.1
+License:             MIT
+license-file:        LICENSE
+author:              Sparsa Roychowdhury (sparsa.roychowdhury@tu-clausthal.de)
+maintainer:          Sparsa Roychowdhury (sparsa.roychowdhury@tu-clausthal.de)
+Category:            Hardware
+
+common common-options
+  default-language: GHC2021
+  default-extensions:
+    DataKinds
+    DefaultSignatures
+    DeriveAnyClass
+    DerivingStrategies
+    LambdaCase
+    NoStarIsType
+    TypeFamilies
+    UnicodeSyntax
+    ViewPatterns
+    TemplateHaskell
+    QuasiQuotes
+    NoImplicitPrelude
+  ghc-options:
+    -Wall -Wcompat
+    -fplugin GHC.TypeLits.Extra.Solver
+    -fplugin GHC.TypeLits.Normalise
+    -fplugin GHC.TypeLits.KnownNat.Solver
+    -fconstraint-solver-iterations=8
+    -fexpose-all-unfoldings
+    -fno-worker-wrapper
+    -fno-unbox-small-strict-fields
+    -fno-unbox-strict-fields
+  build-depends:
+    , base
+    , ghc-typelits-extra >= 0.4.4
+    , ghc-typelits-knownnat >= 0.7.7
+    , ghc-typelits-natnormalise >= 0.7.7
+
+library
+  import: common-options
+  hs-source-dirs: build/src 
+  build-depends: clash-prelude
+  exposed-modules:
+    Add
+    Cube
+    Sqroot
+    TopEntity
+
+executable clash
+  import: common-options
+  hs-source-dirs: app
+  ghc-options: -Wall -Wcompat -threaded
+  main-is: Clash.hs
+  build-depends:
+    , clash-ghc
+    , wishbone 
+    
+test-suite test-library
+  import: common-options
+  default-language: GHC2021
+  hs-source-dirs: build/tests
+  type: exitcode-stdio-1.0
+  ghc-options: -threaded
+  main-is: unittests.hs
+  other-modules:
+	TopModule 
+  build-depends:
+    QuickCheck,
+    clash-prelude-hedgehog,
+    hedgehog,
+    tasty >= 1.2 && < 1.6,
+    tasty-hedgehog,
+    tasty-th
+
