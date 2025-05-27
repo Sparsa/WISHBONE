@@ -21,8 +21,8 @@ $BINDIR/syfco $1 -s0 -f bosy -q double -m fully -os Mealy -o $json_file
 
 #cat $ltl_file
 #echo
-ins=`syfco $1 -ins`
-outs=`syfco $1 -outs`
+ins=`$(BINDIR)/syfco $1 -ins`
+outs=`$(BINDIR)/syfco $1 -outs`
 
 if [ "$#" -ne 3 ]; then
 #
