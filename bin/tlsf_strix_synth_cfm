@@ -1,5 +1,5 @@
 #/bin/bash
-
+BINDIR=bin
 set -e
 
 if [ "$#" -lt 2 ]; then
@@ -16,8 +16,8 @@ json_file=$(basename $tlsf_file .tlsf).json
 #echo "output file: " $ltl_file.hoa
 #echo
 
-syfco $1 -s0 -f ltl -q double -m fully -os Mealy -o $ltl_file
-syfco $1 -s0 -f bosy -q double -m fully -os Mealy -o $json_file
+$BINDIR/syfco $1 -s0 -f ltl -q double -m fully -os Mealy -o $ltl_file
+$BINDIR/syfco $1 -s0 -f bosy -q double -m fully -os Mealy -o $json_file
 
 #cat $ltl_file
 #echo
@@ -36,7 +36,7 @@ fi
 #output=$(basename $tlsf_file .tlsf).cfm
 # run strix
 if [ $3 -eq 0]; then 
-strix -F $ltl_file --ins "$ins" --outs "$outs"  -o aag -O $2 
+$BINDIR/strix -F $ltl_file --ins "$ins" --outs "$outs"  -o aag -O $2
 else
-strix -F $ltl_file --ins "$ins" --outs "$outs" -t trace -o aag -O $2 
+$BINDIR/strix -F $ltl_file --ins "$ins" --outs "$outs" -t trace -o aag -O $2
 fi
