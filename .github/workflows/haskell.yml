@@ -11,28 +11,36 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-haskell@v1
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Haskell
+      uses: haskell/actions/setup@v2
       with:
         ghc-version: '9.4.8'
-        cabal-version: '2.4'
+        #cabal-version: '2.4'
 
-    - name: Cache
+    - name: Cache Cabal packages
       uses: actions/cache@v3
-      env:
-        cache-name: cache-cabal
       with:
-        path: ~/.cabal
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        path: |
+          ~/.cabal/store
+          dist-newstyle
+        key: ${{ runner.os }}-cabal-${{ hashFiles('**/*.cabal', '**/cabal.project') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-      
-    - name: Build
+          ${{ runner.os }}-cabal-
+
+    - name: Update Cabal package list
+      run: cabal update
+
+    - name: build
       run: make
-    
+
+    # - name: Build Clash project
+    #   run: cabal build
+
+    # - name: Run tests (if any)
+    #   run: cabal test
