@@ -28,7 +28,6 @@ ${BUILDDIR}/verilog/${NAME}.v:  ${PATCHED_SOURCES}
 	@mkdir -p ${BUILDDIR}/clash
 	${CABAL} run  wishbone:clash -- \
 	${CPP_FLAGS} \
-    -package-env ${GHC_ENV} \
     -outputdir ${BUILDDIR}/clash \
     --verilog \
     "${BUILDDIR}/src/${TOPENTITY}.hs" -v
