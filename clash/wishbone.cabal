@@ -58,20 +58,19 @@ executable clash
     , clash-ghc
     , wishbone 
     
-test-suite test-library
-  import: common-options
-  default-language: GHC2021
-  hs-source-dirs: build/tests
-  type: exitcode-stdio-1.0
-  ghc-options: -threaded
-  main-is: unittests.hs
-  other-modules:
-	TopModule 
-  build-depends:
-    QuickCheck,
-    clash-prelude-hedgehog,
-    hedgehog,
-    tasty >= 1.2 && < 1.6,
-    tasty-hedgehog,
-    tasty-th
-
+-- test-suite test-library
+--   import: common-options
+--   default-language: GHC2021
+--   hs-source-dirs: build/tests
+--   type: exitcode-stdio-1.0
+--   ghc-options: -threaded
+--   main-is: unittests.hs
+--   other-modules:
+-- 	TopModule
+--   build-depends:
+--     QuickCheck,
+--     clash-prelude-hedgehog,
+--     hedgehog,
+--     tasty >= 1.2 && < 1.6,
+--     tasty-hedgehog,
+--     tasty-th

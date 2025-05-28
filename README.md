@@ -8,7 +8,8 @@ If the LTL is unrealizable, then you might have to add refinement to the LTL abs
 4. The synthesis tool genrates CFM format, which is then converted to Haskell code using *cfm2code* tool. The output is a control code based on Clash HDL named Control.hs. But, this file uses abstract definition of functions used in computation.  So  you have to implement the implementation of the Datapath. The implementation is provided under the /clash/src directory named "TopEntity.hs".
 
 ## The process is divided in two makefile
-The first makefile present in the top directory. This takes the TSL files, abstracts them to LTL files and use Strix to generate the CFM code. Note that Strix does not directly consume *tlsf* format. So, a small script is written that uses the tool *syfco* to convert the *tlsf* to *ltl* file. To make this automatic, we have created a small script named *tlsf_strix_synth_cfm* that takes *tlsf* converts it to *ltl* and runs Strix. This script is also provided in the /bin directory. Once the synthesis is successfull, it calls the makefile under the *clash* directory. This uses the genrated Haskell code to generate the verilog code.
+The first makefile present in the top directory. This takes the TSL files, abstracts them to LTL files and use Strix to generate the CFM code. Note that Strix does not directly consume *tlsf* format. So, a small script is written that uses the tool *syfco* to convert the *tlsf* to *ltl* file. To make this automatic, we have created a small script named *tlsf_strix_synth_cfm* that takes *tlsf* converts it to *ltl* and runs Strix. This script is also provided in the /bin directory. Once the synthesis is successfull, it calls the makefile under the *clash* directory. This uses the genrated Haskell code to generate the verilog code. The verilog code can be found under the directory "/clash/build/verilog".
+
 
 During this process there are a few issues that we had to resolve. The Haskell generation tool *code2cfm* generated code that are not supported by the latest version of clash. So we had to manually made some changes. The changes can be listed here for example:
 1. The previous tool chain generates something called HiddenClockReset, which is non existant in Clash 1.8.1. We had to rename it to HiddenClockResetEnable 
@@ -18,7 +19,7 @@ During this process there are a few issues that we had to resolve. The Haskell g
   :: HiddenClockResetEnable domain
   => ( NFDataX b)
   the NFDataX property for the output domain type. 
-4. Sometime the genrator adds extra 'let' clause, where it is not needed. I had to remove an `let` from the generated code, 
+4. Sometime the generator adds extra 'let' clause, where it is not needed. I had to remove an `let` from the generated code, 
 
 controlCircuit
  :: HiddenClockResetEnable domain
