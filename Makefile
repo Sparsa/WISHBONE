@@ -8,7 +8,7 @@
 ##----------------------------------------------------------------------------##
 
 default: hs
-	cd clash && $(MAKE)
+	cd clash && mkdir $BUILDDIR && $(MAKE)
 
 clash/src/%.hs: %.cfm
 	@${CFM2CODE} --clash  $< -o $@
